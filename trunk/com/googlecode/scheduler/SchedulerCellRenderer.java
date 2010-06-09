@@ -44,7 +44,7 @@ public class SchedulerCellRenderer extends DefaultTableCellRenderer {
     }
     Image im;
     if (value != null && value instanceof ScheduleDay) {
-      MyScheduleDay day = new MyScheduleDay((ScheduleDay) value);
+      ScheduleDay day = (ScheduleDay) value;
       if (day.getDay() == sc.getRealDay()
           && sc.getCurrentMonth() == sc.getRealMonth()
           && sc.getCurrentYear() == sc.getRealYear()) { //Today
@@ -75,20 +75,8 @@ public class SchedulerCellRenderer extends DefaultTableCellRenderer {
     return this;
   }
 
-  protected String getEventsList(MyScheduleDay day){
+  public String getEventsList(ScheduleDay day){
     return day.getEventsList();
-  }
-
-
-  public class MyScheduleDay extends ScheduleDay {
-
-    public MyScheduleDay(ScheduleDay value) {
-      date = value.getDate();
-      this.cal = value.getCal();
-      this.events = value.getEvents();
-    }
-
-   
   }
 }
 
