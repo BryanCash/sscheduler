@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package com.googlecode.scheduler.demo;
 
 import com.googlecode.scheduler.Database;
@@ -20,27 +19,26 @@ import java.util.logging.Logger;
  */
 public class CustomTableCellRenderer extends SchedulerCellRenderer {
 
-  
   @Override
   public String getEventsList(ScheduleDay sDay) {
-    int  day = sDay.getDay();
+    int day = sDay.getDay();
     int month = sDay.getMonth();
     int year = sDay.getYear();
     String tip = "<html><table>";
     boolean results = false;
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
     String date = sdf.format(sDay.getDate());
-    String sql = "SELECT episodes.title AS title , series.title AS series FROM " +
-        "episodes JOIN series on episodes.series_ID = series.series_ID WHERE " +
-        "aired = '"+ date  + "'";
+    String sql = "SELECT episodes.episode AS ep, episodes.title AS title , series.title AS series FROM "
+        + "episodes JOIN series on episodes.series_ID = series.series_ID WHERE "
+        + "aired = '" + date + "'";
     try {
       Database db = new Database(sDay.getDatabase());
       ResultSet rs = db.getStmt().executeQuery(sql);
-      while(rs.next()){
+      while (rs.next()) {
         results = true;
-        tip += "<tr><th>"+rs.getString("series")+"</th><td>"+rs.getString("title")+"</td></tr>";
+        tip += "<tr><th>" + rs.getString("series") + "</th><td>" + rs.getInt("ep") + "." + rs.getString("title") + "</td></tr>";
       }
-      tip +="</table></html>";
+      tip += "</table></html>";
       return results ? tip : null;
     } catch (ClassNotFoundException ex) {
       Logger.getLogger(CustomTableCellRenderer.class.getName()).log(Level.SEVERE, null, ex);
@@ -49,7 +47,4 @@ public class CustomTableCellRenderer extends SchedulerCellRenderer {
     }
     return null;
   }
-
-
-
 }
