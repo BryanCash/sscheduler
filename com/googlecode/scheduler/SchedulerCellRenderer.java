@@ -25,6 +25,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 public class SchedulerCellRenderer extends DefaultTableCellRenderer {
 
   private static final long serialVersionUID = 45647576L;
+  private ImageIcon image = new ImageIcon(getClass().getResource("/com/googlecode/scheduler/images/star.png"));
 
   public SchedulerCellRenderer() {
     setVerticalAlignment(SwingConstants.TOP);
@@ -56,7 +57,7 @@ public class SchedulerCellRenderer extends DefaultTableCellRenderer {
 
       }
       if (getEventsList(day) != null) {
-        ImageIcon ic = new ImageIcon(getClass().getResource("/com/googlecode/scheduler/images/star.png"));
+        ImageIcon ic = getImage();
         setIcon(ic);
         setToolTipText(getEventsList(day));
         revalidate();
@@ -77,6 +78,24 @@ public class SchedulerCellRenderer extends DefaultTableCellRenderer {
 
   public String getEventsList(ScheduleDay day){
     return day.getEventsList();
+  }
+
+  /**
+   * @return the image
+   */
+  public ImageIcon getImage() {
+    return image;
+  }
+
+  /**
+   * @param image the image to set
+   */
+  public void setImage(ImageIcon image) {
+    this.image = image;
+  }
+
+  public ImageIcon getDefaultImage(){
+    return new ImageIcon(getClass().getResource("/com/googlecode/scheduler/images/star.png"));
   }
 }
 
