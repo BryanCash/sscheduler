@@ -25,8 +25,8 @@ public class demo extends javax.swing.JFrame {
     initComponents();
     setLocationRelativeTo(null);
     setVisible(true);
-    scheduler.setDatabase("D:/JavaProjects/myseriesproject/databases/develop.db");
-    scheduler.setDefaultRenderer(new MyScheduleTableCellRenderer());
+    //scheduler.setDatabase("D:/JavaProjects/myseriesproject/databases/develop.db");
+    //scheduler.setDefaultRenderer(new MyScheduleTableCellRenderer());
   }
   
 
@@ -60,10 +60,10 @@ public class demo extends javax.swing.JFrame {
       jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
       .addGroup(jPanel1Layout.createSequentialGroup()
         .addContainerGap()
-        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-          .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+          .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 406, Short.MAX_VALUE)
           .addComponent(scheduler, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        .addContainerGap(20, Short.MAX_VALUE))
+        .addGap(20, 20, 20))
     );
     jPanel1Layout.setVerticalGroup(
       jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -71,8 +71,8 @@ public class demo extends javax.swing.JFrame {
         .addContainerGap()
         .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-        .addComponent(scheduler, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-        .addContainerGap(22, Short.MAX_VALUE))
+        .addComponent(scheduler, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        .addGap(22, 22, 22))
     );
 
     javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());

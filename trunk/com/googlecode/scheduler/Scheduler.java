@@ -103,6 +103,11 @@ public class Scheduler extends javax.swing.JPanel {
     popup.getAccessibleContext().setAccessibleParent(tblCalendar);
 
     setOpaque(false);
+    addComponentListener(new java.awt.event.ComponentAdapter() {
+      public void componentResized(java.awt.event.ComponentEvent evt) {
+        formComponentResized(evt);
+      }
+    });
 
     btnPrev.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/googlecode/scheduler/images/previous.png"))); // NOI18N
     btnPrev.addActionListener(new java.awt.event.ActionListener() {
@@ -164,10 +169,11 @@ public class Scheduler extends javax.swing.JPanel {
             .addComponent(btnNext, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
             .addComponent(btnNow, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 69, Short.MAX_VALUE)
+            .addGap(69, 69, 69)
             .addComponent(lblYear, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-            .addComponent(cmbYear, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)))
+            .addComponent(cmbYear, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGap(0, 0, Short.MAX_VALUE)))
         .addContainerGap())
     );
 
@@ -233,6 +239,12 @@ public class Scheduler extends javax.swing.JPanel {
     EventForm event = new EventForm(frame, true, database, eventDay, (currentMonth + 1), currentYear);
     refreshCalendar(currentMonth, currentYear);
   }//GEN-LAST:event_addEventActionPerformed
+
+  private void formComponentResized(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentResized
+    int height = getHeight();
+    tblCalendar.setRowHeight((height-50)/7);
+  }//GEN-LAST:event_formComponentResized
+
   // Variables declaration - do not modify//GEN-BEGIN:variables
   private javax.swing.JMenuItem addEvent;
   private javax.swing.JButton btnNext;
