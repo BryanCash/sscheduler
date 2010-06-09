@@ -22,6 +22,7 @@ public class Database {
 
   private Connection conn;
   private Statement stmt;
+  private String databasePath;
 
   /**
    * @return the conn
@@ -30,11 +31,18 @@ public class Database {
     return conn;
   }
 
-  public Database() throws ClassNotFoundException, SQLException {
-    File db = new File("./schedule.db");
+  /**
+   *
+   * @param databasePath
+   * @throws ClassNotFoundException
+   * @throws SQLException
+   */
+  public Database(String databasePath) throws ClassNotFoundException, SQLException {
+    this.databasePath = databasePath;
+    File db = new File(databasePath);
     if (db.isFile()) {
       Class.forName("org.sqlite.JDBC");
-      conn = DriverManager.getConnection("jdbc:sqlite:./schedule.db");
+      conn = DriverManager.getConnection("jdbc:sqlite:"+databasePath);
       stmt = conn.createStatement();
     } else {
       createDb();
@@ -45,7 +53,7 @@ public class Database {
   private void createDb() {
     try {
       Class.forName("org.sqlite.JDBC");
-      conn = DriverManager.getConnection("jdbc:sqlite:./schedule.db");
+      conn = DriverManager.getConnection("jdbc:sqlite:" + databasePath);
       stmt = getConn().createStatement();
       String sql = "CREATE  TABLE  IF NOT EXISTS `main`.`events` (`id` "
           + "INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL  UNIQUE , "

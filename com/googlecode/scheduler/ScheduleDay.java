@@ -23,16 +23,18 @@ public class ScheduleDay {
   protected Date date;
   protected Calendar cal;
   protected ArrayList<EventRecord> events = new ArrayList<EventRecord>();
+  private static String database;
 
   public ScheduleDay() {
-    this(Calendar.getInstance().getTime());
+    this(Calendar.getInstance().getTime(), Scheduler.DEFAULT_DATABASE);
   }
 
-  public ScheduleDay(Date date) {
+  public ScheduleDay(Date date, String database) {
     this.date = date;
+    ScheduleDay.database = database;
     cal = Calendar.getInstance();
     cal.setTime(date);
-    events = getDateEvents(date);
+    events = getDateEvents();
   }
 
   public int getDay() {
@@ -66,17 +68,23 @@ public class ScheduleDay {
     return events;
   }
 
-  protected static ArrayList<EventRecord> getDateEvents(Date date) {
-    ArrayList<EventRecord> events = new ArrayList<EventRecord>();
+  /**
+   *
+   * @return
+   */
+  protected ArrayList<EventRecord> getDateEvents() {
+    if(!database.equals(Scheduler.DEFAULT_DATABASE)){
+      return events;
+    }
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy/M/d");
     String d = sdf.format(date);
     String sql = "SELECT * FROM events WHERE date = '" + d + "'";
     Database db = null;
     try {
-      db = new Database();
+      db = new Database(database);
       ResultSet rs = db.getStmt().executeQuery(sql);
       while (rs.next()) {
-        EventRecord ev = new EventRecord();
+        EventRecord ev = new EventRecord(database);
         ev.setId(rs.getInt("id"));
         ev.setTitle(rs.getString("title"));
         ev.setInfo(rs.getString("info"));

@@ -12,6 +12,7 @@ package com.googlecode.scheduler.demo;
 
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.table.TableCellRenderer;
 
 /**
  *
@@ -24,8 +25,8 @@ public class demo extends javax.swing.JFrame {
     initComponents();
     setLocationRelativeTo(null);
     setVisible(true);
-    scheduler.setCreateDb(true);
-    scheduler.getTblCalendar().setDefaultRenderer(Object.class, new CustomTableCellRenderer());
+    scheduler.setDatabase("D:/JavaProjects/myseriesproject/databases/develop.db");
+    scheduler.setDefaultRenderer(new CustomTableCellRenderer());
   }
   
 

@@ -23,7 +23,10 @@ import java.util.logging.Logger;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
+import sun.swing.table.DefaultTableCellHeaderRenderer;
 
 /**
  *
@@ -43,14 +46,21 @@ public class Scheduler extends javax.swing.JPanel {
   private DefaultTableModel mtblCalendar = new SchedulerTableModel();
   String[] months = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
   private Database db;
-  private boolean createDb = false;
+  public static final String DEFAULT_DATABASE = "./schedule.db";
+  private String database;
   private int eventDay;
   SimpleDateFormat sdf = new SimpleDateFormat("y/M/d");
   private Object ScheduleDayClass;
+  private TableCellRenderer defaultRenderer = new SchedulerCellRenderer();
 
   /** Creates new form Scheduler */
   public Scheduler() {
+    this(DEFAULT_DATABASE);
+  }
+
+  public Scheduler(String db) {
     initComponents();
+    database = db;
     prepareTable();
     getRealDates();
     populateCombo();
@@ -58,6 +68,7 @@ public class Scheduler extends javax.swing.JPanel {
     stblCalendar.getViewport().setOpaque(false);
     tblCalendar.addMouseListener(new SchedulerMouseListener(this));
   }
+
 
   /** This method is called from within the constructor to
    * initialize the form.
@@ -99,7 +110,7 @@ public class Scheduler extends javax.swing.JPanel {
 
     setOpaque(false);
 
-    btnPrev.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/googlecode/scheduler/previous.png"))); // NOI18N
+    btnPrev.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/googlecode/scheduler/images/previous.png"))); // NOI18N
     btnPrev.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent evt) {
         btnPrevActionPerformed(evt);
@@ -110,7 +121,7 @@ public class Scheduler extends javax.swing.JPanel {
     lblMonth.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
     lblMonth.setText("January");
 
-    btnNext.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/googlecode/scheduler/next.png"))); // NOI18N
+    btnNext.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/googlecode/scheduler/images/next.png"))); // NOI18N
     btnNext.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent evt) {
         btnNextActionPerformed(evt);
@@ -136,7 +147,7 @@ public class Scheduler extends javax.swing.JPanel {
     tblCalendar.setOpaque(false);
     stblCalendar.setViewportView(tblCalendar);
 
-    btnNow.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/googlecode/scheduler/today.png"))); // NOI18N
+    btnNow.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/googlecode/scheduler/images/today.png"))); // NOI18N
     btnNow.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent evt) {
         btnNowActionPerformed(evt);
@@ -225,7 +236,7 @@ public class Scheduler extends javax.swing.JPanel {
 
   private void addEventActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addEventActionPerformed
     Frame frame = (Frame) SwingUtilities.getRoot(this);
-    EventForm event = new EventForm(frame , true, eventDay, (currentMonth + 1), currentYear);
+    EventForm event = new EventForm(frame, true, database, eventDay, (currentMonth + 1), currentYear);
     refreshCalendar(currentMonth, currentYear);
   }//GEN-LAST:event_addEventActionPerformed
   // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -260,7 +271,7 @@ public class Scheduler extends javax.swing.JPanel {
     getTblCalendar().setRowHeight(rowHeight);
     mtblCalendar.setColumnCount(7);
     mtblCalendar.setRowCount(6);
-    getTblCalendar().setDefaultRenderer(getTblCalendar().getColumnClass(0), new SchedulerCellRenderer()); //Apply renderer
+    getTblCalendar().setDefaultRenderer(getTblCalendar().getColumnClass(0), getDefaultRenderer()); //Apply renderer
   }
 
   private void getRealDates() {
@@ -314,10 +325,10 @@ public class Scheduler extends javax.swing.JPanel {
       int column = (i + som - 2) % 7;
       Date date = null;
       try {
-        date = sdf.parse(currentYear + "/" + (currentMonth+1) + "/" + i);
+        date = sdf.parse(currentYear + "/" + (currentMonth + 1) + "/" + i);
       } catch (ParseException ex) {
       }
-      ScheduleDay s = new ScheduleDay(date);
+      ScheduleDay s = new ScheduleDay(date, getDatabase());
       mtblCalendar.setValueAt(s, row, column);
     }
   }
@@ -434,32 +445,13 @@ public class Scheduler extends javax.swing.JPanel {
     this.futureYears = futureYears;
   }
 
-  /**
-   * @return the createDb
-   */
-  public boolean isCreateDb() {
-    return createDb;
-  }
-
-  /**
-   * @param createDb the createDb to set
-   */
-  public void setCreateDb(boolean createDb) {
-    try {
-      db = new Database();
-    } catch (ClassNotFoundException ex) {
-      Logger.getLogger(Scheduler.class.getName()).log(Level.SEVERE, null, ex);
-    } catch (SQLException ex) {
-      Logger.getLogger(Scheduler.class.getName()).log(Level.SEVERE, null, ex);
+   void showPopup(MouseEvent evt, int day) {
+    if (getDatabase().equals(DEFAULT_DATABASE)) {
+      eventDay = day;
+      addEvent.setText("Add event to " + eventDay + "/" + (currentMonth + 1) + "/" + currentYear);
+      removeEvent.setText("Remove event from " + eventDay + "/" + (currentMonth + 1) + "/" + currentYear);
+      popup.show(evt.getComponent(), evt.getX(), evt.getY());
     }
-    this.createDb = createDb;
-  }
-
-  void showPopup(MouseEvent evt, int day) {
-    eventDay = day;
-    addEvent.setText("Add event to " + eventDay + "/" + (currentMonth + 1) + "/" + currentYear);
-    removeEvent.setText("Remove event from " + eventDay + "/" + (currentMonth + 1) + "/" + currentYear);
-    popup.show(evt.getComponent(), evt.getX(), evt.getY());
   }
 
   /**
@@ -481,6 +473,35 @@ public class Scheduler extends javax.swing.JPanel {
    */
   public void setScheduleDay(Object ScheduleDay) {
     this.ScheduleDayClass = ScheduleDay;
+  }
+
+  /**
+   * @return the database
+   */
+  public String getDatabase() {
+    return database;
+  }
+
+  /**
+   * @param database the database to set
+   */
+  public void setDatabase(String database) {
+    this.database = database;
+  }
+
+  /**
+   * @return the renderer
+   */
+  public TableCellRenderer getDefaultRenderer() {
+    return defaultRenderer;
+  }
+
+  /**
+   * @param renderer the renderer to set
+   */
+  public void setDefaultRenderer(TableCellRenderer renderer) {
+    this.defaultRenderer = renderer;
+    refreshCalendar(currentMonth, currentYear);
   }
 }
 

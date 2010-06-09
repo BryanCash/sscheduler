@@ -20,10 +20,10 @@ public class CustomTableCellRenderer extends SchedulerCellRenderer {
     int  day = sDay.getDay();
     int month = sDay.getMonth();
     int year = sDay.getYear();
-    if(day==15 && month==6 & year==2010){
-      return "aaa";
+    if(day==8 && month == 6 && year == 2010){
+      return "ddd";
     }
-    return super.getEventsList(sDay);
+    return null;
   }
 
 
