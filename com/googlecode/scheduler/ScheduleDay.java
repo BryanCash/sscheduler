@@ -18,7 +18,7 @@ import java.util.logging.Logger;
  *
  * @author ssoldatos
  */
-class ScheduleDay {
+public class ScheduleDay {
 
   protected Date date;
   protected Calendar cal;

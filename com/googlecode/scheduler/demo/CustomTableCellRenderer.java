@@ -5,6 +5,7 @@
 
 package com.googlecode.scheduler.demo;
 
+import com.googlecode.scheduler.ScheduleDay;
 import com.googlecode.scheduler.SchedulerCellRenderer;
 
 /**
@@ -15,7 +16,7 @@ public class CustomTableCellRenderer extends SchedulerCellRenderer {
 
   
   @Override
-  protected String getEventsList(MyScheduleDay sDay) {
+  public String getEventsList(ScheduleDay sDay) {
     int  day = sDay.getDay();
     int month = sDay.getMonth();
     int year = sDay.getYear();
