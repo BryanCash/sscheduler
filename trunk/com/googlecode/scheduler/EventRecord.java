@@ -21,9 +21,13 @@ public class EventRecord {
   private String info;
   private Statement stmt;
 
-  public EventRecord() {
+  /**
+   * 
+   * @param database
+   */
+  public EventRecord(String database) {
     try {
-      Database db = new Database();
+      Database db = new Database(database);
       stmt = db.getStmt();
     } catch (ClassNotFoundException ex) {
       Logger.getLogger(EventRecord.class.getName()).log(Level.SEVERE, null, ex);

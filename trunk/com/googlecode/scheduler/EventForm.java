@@ -19,6 +19,7 @@ import javax.swing.JOptionPane;
  */
 public class EventForm extends javax.swing.JDialog {
   private String date;
+  private final String database;
 
   /**
    * 
@@ -28,13 +29,15 @@ public class EventForm extends javax.swing.JDialog {
    * @param month
    * @param year
    */
-  public EventForm(Frame parent, boolean modal, int day, int month, int year) {
+  public EventForm(Frame parent, boolean modal,String database, int day, int month, int year) {
     super(parent, modal);
     date = year +"/"+month+"/"+day;
+    this.database = database;
     setTitle("Event for " + day +"/"+month +"/"+year);
     initComponents();
     setLocationRelativeTo(null);
     setVisible(true);
+
   }
 
   /** This method is called from within the constructor to
@@ -156,7 +159,7 @@ public class EventForm extends javax.swing.JDialog {
     } else {
       String title = Database.escape(tf_title.getText().trim());
       String information = Database.escape(ta_info.getText().trim());
-      EventRecord event = new EventRecord();
+      EventRecord event = new EventRecord(database);
       event.setInfo(information);
       event.setTitle(title);
       event.setDate(date);
