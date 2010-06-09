@@ -17,7 +17,7 @@ import java.util.logging.Logger;
  *
  * @author ssoldatos
  */
-public class CustomTableCellRenderer extends SchedulerCellRenderer {
+public class MyScheduleTableCellRenderer extends SchedulerCellRenderer {
 
   @Override
   public String getEventsList(ScheduleDay sDay) {
@@ -41,9 +41,9 @@ public class CustomTableCellRenderer extends SchedulerCellRenderer {
       tip += "</table></html>";
       return results ? tip : null;
     } catch (ClassNotFoundException ex) {
-      Logger.getLogger(CustomTableCellRenderer.class.getName()).log(Level.SEVERE, null, ex);
+      Logger.getLogger(MyScheduleTableCellRenderer.class.getName()).log(Level.SEVERE, null, ex);
     } catch (SQLException ex) {
-      Logger.getLogger(CustomTableCellRenderer.class.getName()).log(Level.SEVERE, null, ex);
+      Logger.getLogger(MyScheduleTableCellRenderer.class.getName()).log(Level.SEVERE, null, ex);
     }
     return null;
   }

@@ -26,7 +26,7 @@ public class demo extends javax.swing.JFrame {
     setLocationRelativeTo(null);
     setVisible(true);
     scheduler.setDatabase("D:/JavaProjects/myseriesproject/databases/develop.db");
-    scheduler.setDefaultRenderer(new CustomTableCellRenderer());
+    scheduler.setDefaultRenderer(new MyScheduleTableCellRenderer());
   }
   
 
