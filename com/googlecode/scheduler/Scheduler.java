@@ -501,6 +501,7 @@ public class Scheduler extends javax.swing.JPanel {
    */
   public void setDefaultRenderer(TableCellRenderer renderer) {
     this.defaultRenderer = renderer;
+    getTblCalendar().setDefaultRenderer(getTblCalendar().getColumnClass(0),renderer); //Apply renderer
     refreshCalendar(currentMonth, currentYear);
   }
 }
