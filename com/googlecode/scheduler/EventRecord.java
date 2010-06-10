@@ -4,6 +4,7 @@
  */
 package com.googlecode.scheduler;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.logging.Level;
@@ -36,6 +37,18 @@ public class EventRecord {
     }
   }
 
+  EventRecord(String database, int id) {
+    try {
+      Database db = new Database(database);
+      stmt = db.getStmt();
+      load(id);
+    } catch (ClassNotFoundException ex) {
+      Logger.getLogger(EventRecord.class.getName()).log(Level.SEVERE, null, ex);
+    } catch (SQLException ex) {
+      Logger.getLogger(EventRecord.class.getName()).log(Level.SEVERE, null, ex);
+    }
+  }
+
   public boolean save() {
     String sql = "";
     if (getId() == 0) {
@@ -53,6 +66,35 @@ public class EventRecord {
       return false;
     }
 
+  }
+
+  private void load(int id) {
+    try {
+      String sql = "SELECT * FROM events WHERE id = " + id;
+      ResultSet rs = stmt.executeQuery(sql);
+      if(rs.next()){
+        this.id = rs.getInt("id");
+        this.date = rs.getString("date");
+        this.title = rs.getString("title");
+        this.info = rs.getString("info");
+      } else {
+        this.id = id;
+      }
+    } catch (SQLException ex) {
+      Logger.getLogger(EventRecord.class.getName()).log(Level.SEVERE, null, ex);
+    }
+
+  }
+
+  public boolean delete() {
+    try {
+      String sql = "DELETE FROM events WHERE id = " + this.getId();
+      stmt.executeUpdate(sql);
+      return true;
+    } catch (SQLException ex) {
+      Logger.getLogger(EventRecord.class.getName()).log(Level.SEVERE, null, ex);
+      return false;
+    }
   }
 
 
@@ -111,4 +153,12 @@ public class EventRecord {
   public void setInfo(String info) {
     this.info = info;
   }
+
+  @Override
+  public String toString() {
+    return this.title;
+  }
+
+
+
 }
