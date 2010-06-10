@@ -76,6 +76,7 @@ public class ScheduleDay {
     if(!database.equals(Scheduler.DEFAULT_DATABASE)){
       return events;
     }
+    events.clear();
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy/M/d");
     String d = sdf.format(date);
     String sql = "SELECT * FROM events WHERE date = '" + d + "'";

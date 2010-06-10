@@ -14,13 +14,18 @@ import java.awt.Frame;
 import java.awt.event.MouseEvent;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
+import javax.xml.stream.util.EventReaderDelegate;
 
 /**
  *
@@ -63,7 +68,6 @@ public class Scheduler extends javax.swing.JPanel {
     tblCalendar.addMouseListener(new SchedulerMouseListener(this));
   }
 
-
   /** This method is called from within the constructor to
    * initialize the form.
    * WARNING: Do NOT modify this code. The content of this method is
@@ -98,6 +102,11 @@ public class Scheduler extends javax.swing.JPanel {
 
     removeEvent.setText("Remove Event");
     removeEvent.setToolTipText("Remove Event");
+    removeEvent.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        removeEventActionPerformed(evt);
+      }
+    });
     popup.add(removeEvent);
 
     popup.getAccessibleContext().setAccessibleParent(tblCalendar);
@@ -242,9 +251,33 @@ public class Scheduler extends javax.swing.JPanel {
 
   private void formComponentResized(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentResized
     int height = getHeight();
-    tblCalendar.setRowHeight((height-50)/7);
+    tblCalendar.setRowHeight((height - 50) / 7);
   }//GEN-LAST:event_formComponentResized
 
+  private void removeEventActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeEventActionPerformed
+    Date date = null;
+    try {
+      date = sdf.parse(currentYear + "/" + (currentMonth + 1) + "/" + eventDay);
+    } catch (ParseException ex) {
+      Logger.getLogger(Scheduler.class.getName()).log(Level.SEVERE, null, ex);
+    }
+    ScheduleDay day = new ScheduleDay(date, database);
+    ArrayList<EventRecord> events = day.events;
+    if (events.size() == 0) {
+    } else if (events.size() == 1) {
+      int an = JOptionPane.showConfirmDialog(null, "Do you really want to remove the event?", "Remove event?", JOptionPane.YES_NO_OPTION);
+      if (an == JOptionPane.YES_OPTION) {
+        EventRecord ev = new EventRecord(database, events.get(0).getId());
+        ev.delete();
+      }
+    } else {
+      EventRecord a = (EventRecord) JOptionPane.showInputDialog(null, "Select the event to delete", "Delete event", JOptionPane.YES_NO_OPTION, null, events.toArray(), -1);
+      if (a != null) {
+        a.delete();
+      }
+    }
+    refreshCalendar(currentMonth, currentYear); //Refresh calendar
+  }//GEN-LAST:event_removeEventActionPerformed
   // Variables declaration - do not modify//GEN-BEGIN:variables
   private javax.swing.JMenuItem addEvent;
   private javax.swing.JButton btnNext;
@@ -451,11 +484,23 @@ public class Scheduler extends javax.swing.JPanel {
     this.futureYears = futureYears;
   }
 
-   void showPopup(MouseEvent evt, int day) {
+  void showPopup(MouseEvent evt, int day) {
     if (getDatabase().equals(DEFAULT_DATABASE)) {
       eventDay = day;
+      Date date = null;
+      try {
+        date = sdf.parse(currentYear + "/" + (currentMonth + 1) + "/" + eventDay);
+      } catch (ParseException ex) {
+        Logger.getLogger(Scheduler.class.getName()).log(Level.SEVERE, null, ex);
+      }
+      ScheduleDay sday = new ScheduleDay(date, database);
       addEvent.setText("Add event to " + eventDay + "/" + (currentMonth + 1) + "/" + currentYear);
-      removeEvent.setText("Remove event from " + eventDay + "/" + (currentMonth + 1) + "/" + currentYear);
+      if(sday.events.size() > 0){
+        removeEvent.setEnabled(true);
+        removeEvent.setText("Remove event from " + eventDay + "/" + (currentMonth + 1) + "/" + currentYear);
+      } else {
+        removeEvent.setEnabled(false);
+      }
       popup.show(evt.getComponent(), evt.getX(), evt.getY());
     }
   }
@@ -507,7 +552,7 @@ public class Scheduler extends javax.swing.JPanel {
    */
   public void setDefaultRenderer(TableCellRenderer renderer) {
     this.defaultRenderer = renderer;
-    getTblCalendar().setDefaultRenderer(getTblCalendar().getColumnClass(0),renderer); //Apply renderer
+    getTblCalendar().setDefaultRenderer(getTblCalendar().getColumnClass(0), renderer); //Apply renderer
     refreshCalendar(currentMonth, currentYear);
   }
 }
