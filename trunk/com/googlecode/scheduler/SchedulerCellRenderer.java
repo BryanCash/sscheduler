@@ -8,10 +8,14 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.Image;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
+import sun.beans.editors.ColorEditor;
 
 /**
  *
@@ -41,6 +45,8 @@ public class SchedulerCellRenderer extends DefaultTableCellRenderer {
     Image im;
     if (value != null && value instanceof ScheduleDay) {
       ScheduleDay day = (ScheduleDay) value;
+
+      /// CURRENT DAY
       if (day.getDay() == sc.getRealDay()
           && sc.getCurrentMonth() == sc.getRealMonth()
           && sc.getCurrentYear() == sc.getRealYear()) { //Today
@@ -49,7 +55,15 @@ public class SchedulerCellRenderer extends DefaultTableCellRenderer {
         setFont(getFont().deriveFont(Font.BOLD));
       } else {
         setBackground(Color.white);
-
+      }
+      
+      //SELECTED DAY
+      if (isSelected) {
+        setBorder(BorderFactory.createLineBorder(Color.RED,2));
+        setBackground(sc.getBackground().brighter());
+      } else {
+        setBorder(BorderFactory.createEmptyBorder());
+         setBackground(getBackground());
       }
       if (getEventsList(day) != null) {
         ImageIcon ic = getImage();
@@ -66,12 +80,14 @@ public class SchedulerCellRenderer extends DefaultTableCellRenderer {
     } else {
       setIcon(null);
       setToolTipText("");
+      setBackground(Color.WHITE);
+      setBorder(BorderFactory.createEmptyBorder());
     }
 
     return this;
   }
 
-  public String getEventsList(ScheduleDay day){
+  public String getEventsList(ScheduleDay day) {
     return day.getEventsList();
   }
 
@@ -89,7 +105,7 @@ public class SchedulerCellRenderer extends DefaultTableCellRenderer {
     this.image = image;
   }
 
-  public ImageIcon getDefaultImage(){
+  public ImageIcon getDefaultImage() {
     return new ImageIcon(getClass().getResource("/com/googlecode/scheduler/images/star.png"));
   }
 }
