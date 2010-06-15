@@ -110,12 +110,13 @@ public class ScheduleDay {
     if (events.size() == 0) {
       return null;
     } else {
-      String tip = "<html><table>";
+      String tip = "<html><table width='100px'>";
       for (Iterator<EventRecord> it = events.iterator(); it.hasNext();) {
         EventRecord event = it.next();
-        tip += "<tr><th>" + event.getTitle() + "</th>";
-        tip += "<td>" + event.getInfo() + "</td></tr>";
-        tip += "<tr><td colspan='2'><hr></td></tr>";
+        tip += "<tr><th>" + event.getTitle() + "</th></tr>";
+        tip += "<tr><th><hr></th></tr>";
+        tip += "<tr><td>" + event.getInfo() + "</td></tr>";
+        
       }
       tip += "</table></html>";
       return tip;

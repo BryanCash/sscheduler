@@ -151,7 +151,7 @@ public class EventRecord {
    * @param info the info to set
    */
   public void setInfo(String info) {
-    this.info = info;
+    this.info = info.replaceAll("\n", "<br />");
   }
 
   @Override
