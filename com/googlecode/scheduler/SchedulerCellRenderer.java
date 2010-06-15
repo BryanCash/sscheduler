@@ -45,7 +45,7 @@ public class SchedulerCellRenderer extends DefaultTableCellRenderer {
     Image im;
     if (value != null && value instanceof ScheduleDay) {
       ScheduleDay day = (ScheduleDay) value;
-
+      setText("  "+String.valueOf(day.getDay()));
       /// CURRENT DAY
       if (day.getDay() == sc.getRealDay()
           && sc.getCurrentMonth() == sc.getRealMonth()
