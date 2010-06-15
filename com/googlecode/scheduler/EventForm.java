@@ -20,6 +20,7 @@ import javax.swing.JOptionPane;
 public class EventForm extends javax.swing.JDialog {
   private String date;
   private final String database;
+  private EventRecord event = null;
 
   /**
    * 
@@ -159,11 +160,11 @@ public class EventForm extends javax.swing.JDialog {
     } else {
       String title = Database.escape(tf_title.getText().trim());
       String information = Database.escape(ta_info.getText().trim());
-      EventRecord event = new EventRecord(database);
-      event.setInfo(information);
-      event.setTitle(title);
-      event.setDate(date);
-      if(event.save()){
+      event = new EventRecord(database);
+      getEvent().setInfo(information);
+      getEvent().setTitle(title);
+      getEvent().setDate(date);
+      if(getEvent().save()){
         dispose();
 
       } else {
@@ -184,4 +185,11 @@ public class EventForm extends javax.swing.JDialog {
   private javax.swing.JTextArea ta_info;
   private javax.swing.JTextField tf_title;
   // End of variables declaration//GEN-END:variables
+
+  /**
+   * @return the event
+   */
+  public EventRecord getEvent() {
+    return event;
+  }
 }

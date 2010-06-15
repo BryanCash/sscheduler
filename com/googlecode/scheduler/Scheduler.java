@@ -12,6 +12,8 @@ package com.googlecode.scheduler;
 
 import java.awt.Frame;
 import java.awt.event.MouseEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -66,6 +68,7 @@ public class Scheduler extends javax.swing.JPanel {
     refreshCalendar(realMonth, realYear); //Refresh calendar
     stblCalendar.getViewport().setOpaque(false);
     tblCalendar.addMouseListener(new SchedulerMouseListener(this));
+    addPropertyChangeListener(new SchedulePropertyChangeListener());
   }
 
   /** This method is called from within the constructor to
@@ -211,43 +214,47 @@ public class Scheduler extends javax.swing.JPanel {
 
   private void btnPrevActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPrevActionPerformed
     if (currentMonth == 0) { //Back one year
-      currentMonth = 11;
-      currentYear -= 1;
+      setCurrentMonth(11);
+      setCurrentYear(getCurrentYear()-1);
     } else { //Back one month
-      currentMonth -= 1;
+      setCurrentMonth(getCurrentMonth() -1);
     }
-    refreshCalendar(currentMonth, currentYear);
   }//GEN-LAST:event_btnPrevActionPerformed
 
   private void btnNextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNextActionPerformed
     if (currentMonth == 11) { //Foward one year
-      currentMonth = 0;
-      currentYear += 1;
+      setCurrentMonth(0);
+      setCurrentYear(getCurrentYear() + 1);
     } else { //Foward one month
-      currentMonth += 1;
+      setCurrentMonth(getCurrentMonth() + 1);
     }
-    refreshCalendar(currentMonth, currentYear);
   }//GEN-LAST:event_btnNextActionPerformed
 
   private void cmbYearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbYearActionPerformed
     if (cmbYear.getSelectedItem() != null) {
       String b = cmbYear.getSelectedItem().toString();
-      currentYear = Integer.parseInt(b); //Get the numeric value
-      refreshCalendar(currentMonth, currentYear); //Refresh
+      setCurrentYear(Integer.parseInt(b));
     }
-
   }//GEN-LAST:event_cmbYearActionPerformed
 
   private void btnNowActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNowActionPerformed
-    currentMonth = realMonth;
-    currentYear = realYear;
-    refreshCalendar(currentMonth, currentYear); //Refresh calendar
+    try {
+      Date oldValue = sdf.parse(currentYear + "/" + (currentMonth + 1) + "/" + eventDay);
+      Date newValue = sdf.parse(realYear + "/" + (realMonth + 1) + "/" + realDay);
+      currentMonth = realMonth;
+      currentYear = realYear;
+      firePropertyChange("date", oldValue, newValue);
+    } catch (ParseException ex) {
+    }
+
   }//GEN-LAST:event_btnNowActionPerformed
 
   private void addEventActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addEventActionPerformed
     Frame frame = (Frame) SwingUtilities.getRoot(this);
     EventForm event = new EventForm(frame, true, database, eventDay, (currentMonth + 1), currentYear);
-    refreshCalendar(currentMonth, currentYear);
+    if (event.getEvent() != null) {
+      firePropertyChange("eventAdded", null, event.getEvent());
+    }
   }//GEN-LAST:event_addEventActionPerformed
 
   private void formComponentResized(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentResized
@@ -257,6 +264,7 @@ public class Scheduler extends javax.swing.JPanel {
 
   private void removeEventActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeEventActionPerformed
     Date date = null;
+    EventRecord event = null;
     try {
       date = sdf.parse(currentYear + "/" + (currentMonth + 1) + "/" + eventDay);
     } catch (ParseException ex) {
@@ -268,16 +276,18 @@ public class Scheduler extends javax.swing.JPanel {
     } else if (events.size() == 1) {
       int an = JOptionPane.showConfirmDialog(null, "Do you really want to remove the event?", "Remove event?", JOptionPane.YES_NO_OPTION);
       if (an == JOptionPane.YES_OPTION) {
-        EventRecord ev = new EventRecord(database, events.get(0).getId());
-        ev.delete();
+        event = new EventRecord(database, events.get(0).getId());
+        event.delete();
       }
     } else {
-      EventRecord a = (EventRecord) JOptionPane.showInputDialog(null, "Select the event to delete", "Delete event", JOptionPane.YES_NO_OPTION, null, events.toArray(), -1);
-      if (a != null) {
-        a.delete();
+      event = (EventRecord) JOptionPane.showInputDialog(null, "Select the event to delete", "Delete event", JOptionPane.YES_NO_OPTION, null, events.toArray(), -1);
+      if (event != null) {
+        event.delete();
       }
     }
-    refreshCalendar(currentMonth, currentYear); //Refresh calendar
+    if (event != null) {
+      firePropertyChange("eventRemoved", event, null);
+    }
   }//GEN-LAST:event_removeEventActionPerformed
   // Variables declaration - do not modify//GEN-BEGIN:variables
   private javax.swing.JMenuItem addEvent;
@@ -326,6 +336,7 @@ public class Scheduler extends javax.swing.JPanel {
 
   private void populateCombo() {
     //Populate combo box
+    cmbYear.removeAllItems();
     for (int i = getRealYear() - getPastYears(); i <= getRealYear() + getFutureYears(); i++) {
       cmbYear.addItem(String.valueOf(i));
     }
@@ -383,8 +394,10 @@ public class Scheduler extends javax.swing.JPanel {
   /**
    * @param realDay the realDay to set
    */
-  public void setRealDay(int realDay) {
+  private void setRealDay(int realDay) {
+    int oldValue = getRealDay();
     this.realDay = realDay;
+    firePropertyChange("realDay", oldValue, realDay);
   }
 
   /**
@@ -397,8 +410,10 @@ public class Scheduler extends javax.swing.JPanel {
   /**
    * @param realMonth the realMonth to set
    */
-  public void setRealMonth(int realMonth) {
+  private void setRealMonth(int realMonth) {
+    int oldValue = getRealMonth();
     this.realMonth = realMonth;
+    firePropertyChange("realMonth", oldValue, realMonth);
   }
 
   /**
@@ -411,8 +426,10 @@ public class Scheduler extends javax.swing.JPanel {
   /**
    * @param realYear the realYear to set
    */
-  public void setRealYear(int realYear) {
+  private void setRealYear(int realYear) {
+    int oldValue = getRealYear();
     this.realYear = realYear;
+    firePropertyChange("realYear", oldValue, realYear);
   }
 
   /**
@@ -426,7 +443,9 @@ public class Scheduler extends javax.swing.JPanel {
    * @param currentMonth the currentMonth to set
    */
   public void setCurrentMonth(int currentMonth) {
+    int oldValue = getCurrentMonth();
     this.currentMonth = currentMonth;
+    firePropertyChange("month", oldValue, currentMonth);
   }
 
   /**
@@ -440,7 +459,9 @@ public class Scheduler extends javax.swing.JPanel {
    * @param currentYear the currentYear to set
    */
   public void setCurrentYear(int currentYear) {
+    int oldValue = getCurrentYear();
     this.currentYear = currentYear;
+    firePropertyChange("year", oldValue, currentYear);
   }
 
   /**
@@ -468,7 +489,10 @@ public class Scheduler extends javax.swing.JPanel {
    * @param pastYears the pastYears to set
    */
   public void setPastYears(int pastYears) {
+    int oldValue = getPastYears();
     this.pastYears = pastYears;
+    firePropertyChange("pastYears", oldValue, pastYears);
+
   }
 
   /**
@@ -482,7 +506,9 @@ public class Scheduler extends javax.swing.JPanel {
    * @param futureYears the futureYears to set
    */
   public void setFutureYears(int futureYears) {
+    int oldValue = getFutureYears();
     this.futureYears = futureYears;
+    firePropertyChange("futureYears", oldValue, futureYears);
   }
 
   void showPopup(MouseEvent evt, int day) {
@@ -496,7 +522,7 @@ public class Scheduler extends javax.swing.JPanel {
       }
       ScheduleDay sday = new ScheduleDay(date, database);
       addEvent.setText("Add event to " + eventDay + "/" + (currentMonth + 1) + "/" + currentYear);
-      if(sday.events.size() > 0){
+      if (sday.events.size() > 0) {
         removeEvent.setEnabled(true);
         removeEvent.setText("Remove event from " + eventDay + "/" + (currentMonth + 1) + "/" + currentYear);
       } else {
@@ -538,7 +564,9 @@ public class Scheduler extends javax.swing.JPanel {
    * @param database the database to set
    */
   public void setDatabase(String database) {
+    String oldValue = getDatabase();
     this.database = database;
+    firePropertyChange("database", oldValue, database);
   }
 
   /**
@@ -552,9 +580,9 @@ public class Scheduler extends javax.swing.JPanel {
    * @param renderer the renderer to set
    */
   public void setDefaultRenderer(TableCellRenderer renderer) {
+    TableCellRenderer oldValue = getDefaultRenderer();
     this.defaultRenderer = renderer;
-    getTblCalendar().setDefaultRenderer(getTblCalendar().getColumnClass(0), renderer); //Apply renderer
-    refreshCalendar(currentMonth, currentYear);
+    firePropertyChange("renderer", oldValue, renderer);
   }
 }
 
