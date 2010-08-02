@@ -36,6 +36,9 @@ public class SchedulePropertyChangeListener implements PropertyChangeListener {
         || p.equals(EVENT_ADDED)|| p.equals(EVENT_REMOVED) 
         || p.equals(PAST_YEARS)|| p.equals(FUTURE_YEARS)){
       scheduler.refreshCalendar(scheduler.getCurrentMonth(), scheduler.getCurrentYear());
+      if(p.equals(PAST_YEARS)|| p.equals(FUTURE_YEARS)){
+        scheduler.goToToday();
+      }
     }
 
   }

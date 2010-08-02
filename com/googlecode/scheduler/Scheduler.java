@@ -42,7 +42,7 @@ public class Scheduler extends javax.swing.JPanel {
   private int currentMonth;
   private int currentYear;
   private int rowHeight = 42;
-  private int pastYears = 0;
+  private int pastYears = 2;
   private int futureYears = 2;
   private DefaultTableModel mtblCalendar = new SchedulerTableModel();
   String[] months = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
@@ -122,6 +122,7 @@ public class Scheduler extends javax.swing.JPanel {
     });
 
     btnPrev.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/googlecode/scheduler/images/previous.png"))); // NOI18N
+    btnPrev.setToolTipText("Previous Month");
     btnPrev.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent evt) {
         btnPrevActionPerformed(evt);
@@ -133,6 +134,7 @@ public class Scheduler extends javax.swing.JPanel {
     lblMonth.setText("January");
 
     btnNext.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/googlecode/scheduler/images/next.png"))); // NOI18N
+    btnNext.setToolTipText("Next Month");
     btnNext.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent evt) {
         btnNextActionPerformed(evt);
@@ -143,6 +145,7 @@ public class Scheduler extends javax.swing.JPanel {
     lblYear.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
     lblYear.setText("Year : ");
 
+    cmbYear.setToolTipText("Select Year");
     cmbYear.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent evt) {
         cmbYearActionPerformed(evt);
@@ -160,6 +163,7 @@ public class Scheduler extends javax.swing.JPanel {
     stblCalendar.setViewportView(tblCalendar);
 
     btnNow.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/googlecode/scheduler/images/today.png"))); // NOI18N
+    btnNow.setToolTipText("Today");
     btnNow.addActionListener(new java.awt.event.ActionListener() {
       public void actionPerformed(java.awt.event.ActionEvent evt) {
         btnNowActionPerformed(evt);
@@ -238,6 +242,11 @@ public class Scheduler extends javax.swing.JPanel {
   }//GEN-LAST:event_cmbYearActionPerformed
 
   private void btnNowActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNowActionPerformed
+    goToToday();
+
+  }//GEN-LAST:event_btnNowActionPerformed
+
+  public void goToToday(){
     try {
       Date oldValue = sdf.parse(currentYear + "/" + (currentMonth + 1) + "/" + eventDay);
       Date newValue = sdf.parse(realYear + "/" + (realMonth + 1) + "/" + realDay);
@@ -246,8 +255,8 @@ public class Scheduler extends javax.swing.JPanel {
       firePropertyChange("date", oldValue, newValue);
     } catch (ParseException ex) {
     }
+  }
 
-  }//GEN-LAST:event_btnNowActionPerformed
 
   private void addEventActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addEventActionPerformed
     Frame frame = (Frame) SwingUtilities.getRoot(this);
@@ -491,6 +500,7 @@ public class Scheduler extends javax.swing.JPanel {
   public void setPastYears(int pastYears) {
     int oldValue = getPastYears();
     this.pastYears = pastYears;
+    populateCombo();
     firePropertyChange("pastYears", oldValue, pastYears);
 
   }
@@ -508,6 +518,7 @@ public class Scheduler extends javax.swing.JPanel {
   public void setFutureYears(int futureYears) {
     int oldValue = getFutureYears();
     this.futureYears = futureYears;
+    populateCombo();
     firePropertyChange("futureYears", oldValue, futureYears);
   }
 
