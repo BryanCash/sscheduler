@@ -155,6 +155,7 @@ public class Scheduler extends javax.swing.JPanel {
     stblCalendar.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
     stblCalendar.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
     stblCalendar.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+    stblCalendar.setViewportBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
     stblCalendar.setOpaque(false);
 
     tblCalendar.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
