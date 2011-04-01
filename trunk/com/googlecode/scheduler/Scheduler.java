@@ -10,6 +10,7 @@
  */
 package com.googlecode.scheduler;
 
+import java.awt.Color;
 import java.awt.Frame;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
@@ -53,6 +54,7 @@ public class Scheduler extends javax.swing.JPanel {
   SimpleDateFormat sdf = new SimpleDateFormat("y/M/d");
   private Object ScheduleDayClass;
   private TableCellRenderer defaultRenderer = new SchedulerCellRenderer();
+  private Color textColor;
 
   /** Creates new form Scheduler */
   public Scheduler() {
@@ -130,6 +132,7 @@ public class Scheduler extends javax.swing.JPanel {
     });
 
     lblMonth.setFont(lblMonth.getFont().deriveFont(lblMonth.getFont().getStyle() | java.awt.Font.BOLD));
+    lblMonth.setForeground(textColor);
     lblMonth.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
     lblMonth.setText("January");
 
@@ -142,6 +145,7 @@ public class Scheduler extends javax.swing.JPanel {
     });
 
     lblYear.setFont(lblYear.getFont().deriveFont(lblYear.getFont().getStyle() | java.awt.Font.BOLD));
+    lblYear.setForeground(textColor);
     lblYear.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
     lblYear.setText("Year : ");
 
@@ -595,6 +599,24 @@ public class Scheduler extends javax.swing.JPanel {
     TableCellRenderer oldValue = getDefaultRenderer();
     this.defaultRenderer = renderer;
     firePropertyChange("renderer", oldValue, renderer);
+  }
+
+  /**
+   * @return the textColor
+   */
+  public Color getTextColor() {
+    return textColor;
+  }
+
+  /**
+   * @param textColor the textColor to set
+   */
+  public void setTextColor(Color textColor) {
+    this.textColor = textColor;
+    lblMonth.setForeground(textColor);
+    lblYear.setForeground(textColor);
+    revalidate();
+    repaint();
   }
 }
 
